@@ -1,0 +1,9 @@
+{% load i18n %}
+<div class="panel panel-default">
+    <div class="panel-heading">{% trans "Announcements" %}</div>
+    <div class="panel-body">
+        {% for announcement in announcements %}
+            <li class=""><a href="{% url 'niji:announcement' announcement.pk %}">{{ announcement.title }}</a></li>
+        {% endfor %}
+    </div>
+</div>

@@ -1,0 +1,57 @@
+{% extends 'niji/base.html' %}
+{% load i18n %}
+{% load niji_tags %}
+{% load humanize %}
+
+{% block left %}
+    {% block before_main_left %}{% endblock %}
+    <div class="panel panel-default">
+        <div class="panel-body panel-subtitle">
+            <span class="label label-success">{{ panel_title }}</span>
+        </div>
+        <!-- List group -->
+        <ul class="list-group topic-list">
+            {% for topic in topics %}
+                <li class="list-group-item topic-entry">
+                    <div class="entry media">
+                        <div class="media-body media-middle">
+                            <a href="{% url 'niji:topic' pk=topic.pk %}" class="entry-link">
+                                {{ topic.title }}
+                            </a>
+                            <p class="entry-meta">
+                                <a href="{% url 'niji:topic' pk=topic.pk %}" class="content-raw">
+                                    {{ topic.content_raw }}
+                                </a>
+                            </p>
+                            <p class="entry-meta">
+                                <span class="meta">
+                                    <a href="{% url 'niji:node' topic.node.pk %}">
+                                    </a>
+                                </span>
+                                    <span class="meta meta-username">
+                                        <a href="{% url 'niji:user_info' topic.user.pk %}">
+                                            {{ topic.user.username }}
+                                        </a>
+                                    </span>
+                                    <span class="meta meta-pub_date">
+                                        {{ topic.pub_date | naturaltime }}
+                                    </span>
+                                    <span class="meta meta-last_replied hidden-xs">
+                                        {% trans "Last Replied" %}: {{ topic.last_replied | naturaltime }}
+                                    </span>
+                            </p>
+                        </div>
+                        {% if topic.reply_count > 0 %}
+                        <div class="media-right media-middle">
+                            <span class="badge">{{ topic.reply_count }}</span>
+                        </div>
+                        {% endif %}
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+        <div class="panel-footer">
+            {% get_pagination %}
+        </div>
+    </div>
+{% endblock %}

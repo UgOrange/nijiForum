@@ -1,0 +1,25 @@
+{% extends 'niji/base.html' %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+
+{% block left %}
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <form method="post" action="{% url "niji:create_topic" %}" enctype="multipart/form-data">
+                {% crispy form %}
+            </form>
+        </div>
+    </div>
+    <script src="/static/kindeditor/kindeditor-all-min.js"></script>
+    <script src="/static/kindeditor/lang/zh-CN.js"></script>
+    <script src="/static/kindeditor/themes/default/default.css"></script>
+    <script>
+        KindEditor.ready(function (k) {
+            window.editor = k.create('#id_content_rendered',{
+                // width: '800px',
+                height: '300px',
+                uploadJson: '/upload/kindeditor',
+            });
+        })
+    </script>
+{% endblock %}

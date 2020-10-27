@@ -1,0 +1,73 @@
+{% extends 'niji/base.html' %}
+{% load i18n %}
+{% block left %}
+    <div class="panel panel-default">
+        <div class="panel-body">
+            {% if messages %}
+                <ul class="list-group">
+                    {% for message in messages %}
+                        <li class="list-group-item {{ message.tags }}">{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+            <form method="post" action="{% url "niji:reg" %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="usernameInput">{% trans "Username" %}</label>
+                    <input type="text" name="username" class="form-control" id="usernameInput" placeholder="" required>
+                </div>
+                <div class="form-group">
+                    <label for="emailInput">{% trans "Email" %}</label>
+                    <input type="email" name="email" class="form-control" id="emailInput" placeholder="" required>
+                </div>
+                <div class="form-group">
+                    <label for="InputPassword1">{% trans "Password" %}</label>
+                    <input type="password" name="password1" class="form-control" id="InputPassword1" placeholder="" required>
+                </div>
+                <div class="form-group">
+                    <label for="InputPassword2">重复密码</label>
+                    <input type="password" name="password2" class="form-control" id="InputPassword2" placeholder="" required>
+                </div>
+                <div class="form-group">
+                    <label for="InputCode">验证码</label>
+                    {% comment %} <input type="text" name="code" class="form-control" id="InputCode" placeholder="">
+                    <button type="submit" class="btn btn-default">{% trans "Submit" %}</button>
+                     {% endcomment %}
+                     
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="请输入您短信中收到的验证码" required>
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" type="button" id='getCode'>获取验证码</button>
+                        </span>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-default">{% trans "Submit" %}</button>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+    function checkEmail(email){
+        return /^[a-zA-Z0-9_-]+@([a-zA-Z0-9]+\.)+(com|cn|net|org)$/.test(email)
+    }
+    $(function() {
+        console.log('reg')
+        $("#getCode").click(function() {
+            let email = $("input[name='email']").val()
+            console.log(email, checkEmail(email))
+
+
+            $.ajax({
+                type: 'POST',
+                url: `/reg/code/`,
+                data: {
+                    email: email
+                },
+                success: val => {
+                    console.log(val)
+                }
+            });
+        })
+    })
+    </script>
+{% endblock %}

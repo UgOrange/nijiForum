@@ -1,0 +1,108 @@
+{% load i18n %}
+{% load staticfiles %}
+<!DOCTYPE HTML>
+{% get_current_language as LANGUAGE_CODE %}
+<html lang="{{ LANGUAGE_CODE }}">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport" />
+    <meta content="yes" name="apple-mobile-web-app-capable" />
+    <meta content="black" name="apple-mobile-web-app-status-bar-style" />
+    <meta name="format-detection" content="telephone=no" />
+    {% comment %} <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.css" crossorigin="anonymous"> {% endcomment %}
+    <link href="https://cdn.bootcss.com/twitter-bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'niji/css/main.css' %}"/>
+    <script src="https://cdn.bootcss.com/jquery/2.2.0/jquery.min.js"></script>
+    {% comment %} <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" crossorigin="anonymous"></script> {% endcomment %}
+    <script src="https://cdn.bootcss.com/twitter-bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <title>{{ title }}{% if site_name %}-{{ site_name }}{% endif %}</title>
+</head>
+<body>
+
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            {% comment %} <a class="navbar-brand" href="{% url 'niji:index' %}">{% if site_name %}{{ site_name }}{% else %}NIJI{% endif %}</a> {% endcomment %}
+            <a class="navbar-brand" href="{% url 'niji:index' %}"><img src="/static/niji/image/logo.jpg" /></a>
+        </div>
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li class="nav-list"><a href="/">网站主页</a></li>
+                <li class="nav-list"><a href=" ">Home</a></li>
+                <li class="nav-list">
+                    {% comment %} <div style='height: 50px; overflow: hidden;'>
+                        <ul class="nav navbar-nav" id="announcement-bar" style="position: relative; padding-left: 15px;">
+                        {% for announcement in announcements %}
+                            <li style="float: none; height: 50px;"><a href="{% url 'niji:announcement' announcement.pk %}">{{ announcement.title }}</a></li>
+                        {% endfor %}
+                        </ul>
+                    </div> {% endcomment %}
+                    <a href="{% url 'niji:announcement' %}">公告</a>
+                </li>
+                
+                <li class="nav-list">
+                    <div class="btn-group padding-4-0 margin-0">
+                        <button type="button" class="btn btn-default dropdown-toggle border-none margin-5-12 pl-15" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            分类 <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            {% for node in nodes %}
+                                <li class=""><a href="{% url 'niji:node' node.pk %}">{{ node.title }}</a></li>
+                            {% endfor %}
+                            {% comment %} <li><a href="#">Action</a></li>
+                            <li><a href="#">Another action</a></li>
+                            <li><a href="#">Something else here</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="#">Separated link</a></li> {% endcomment %}
+                        </ul>
+                    </div>
+                </li>
+            {% if request.user.is_authenticated %}
+                <li class="nav-list"><a href="{% url 'niji:create_topic' %}">发帖</a></li>
+            {% endif %}
+            </ul>
+
+            <form class="navbar-form navbar-left" role="search" action="{% url 'niji:search_redirect' %}">
+                <div class="form-group">
+                    <input type="text" id="keywordInput" name="keyword" class="form-control" placeholder="{% trans 'Search' %}">
+                </div>
+                <button type="submit" id="navSearchBtn" class="btn btn-default">{% trans 'Search' %}</button>
+            </form>
+            
+            {% if request.user.is_authenticated %}
+            <p class="navbar-text">当前登录用户：<a href="{% url 'niji:user_info' request.user.pk %}" class="navbar-link">{{ request.user.username }}</a></p>
+            {% endif %}
+        </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+</nav>
+
+<div id="main" class="container">
+    <div class="row">
+        <div class="col-lg-8"> <!-- LEFT -->
+            {% block left %}{% endblock %}
+        </div><!-- END LEFT -->
+        <div class="col-lg-4"> <!-- RIGHT -->
+            {% block widgtet_before %}{% endblock %}
+            {% if request.user.is_authenticated %}
+                {% include 'niji/widgets/authenticated_user_panel.html' %}
+            {% else %}
+                {% include 'niji/widgets/visitor_user_panel.html' %}
+            {% endif %}
+            {% comment %} {% include 'niji/widgets/nodes.html' %} {% endcomment %}
+            {% comment %} {% include 'niji/widgets/announcements.html' %} {% endcomment %}
+            {% block widget_after %}{% endblock %}
+        </div><!-- END RIGHT -->
+    </div>
+</div>
+
+{% block footer_ext %}{% endblock %}
+</body>
+</html>

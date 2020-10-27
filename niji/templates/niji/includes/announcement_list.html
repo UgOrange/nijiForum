@@ -1,0 +1,67 @@
+{% extends 'niji/base.html' %}
+{% load i18n %}
+{% load niji_tags %}
+{% load humanize %}
+
+{% block left %}
+    {% block before_main_left %}{% endblock %}
+    <div class="panel panel-default">
+        <div class="panel-body panel-subtitle">
+            <span class="label label-success">{{ panel_title }}</span>
+            {% comment %} {% if show_order %}
+              <span class="pull-right ordering">
+                Order:
+                <span>
+                  <a href="{% change_topic_ordering request '-last_replied' %}">Last Replied</a>
+                </span>
+                <span>
+                  <a href="{% change_topic_ordering request '-pub_date' %}">Topic Date</a>
+                </span>
+              </span>
+            {% endif %} {% endcomment %}
+        </div>
+        <!-- List group -->
+        <ul class="list-group topic-list">
+            {% for announcement in announcements %}
+                <li class="list-group-item topic-entry">
+                    <div class="entry media">
+                        {% comment %} <div class="media-left media-middle">
+                            <a class="list-avatar-link" href="{% url 'niji:user_info' topic.user.pk %}"><img class="user-avatar" src="{% avatar_url topic.user %}"></a>
+                        </div> {% endcomment %}
+                        <div class="media-body media-middle">
+                            <a href="{% url 'niji:announcement' pk=announcement.pk %}" class="entry-link">
+                                {{ announcement.title }}
+                            </a>
+                            <p class="entry-meta">
+                                <a href="{% url 'niji:announcement' pk=announcement.pk %}" class="content-raw">
+                                    {{ announcement.content_raw }}
+                                </a>
+                            </p>
+                            <p class="entry-meta">
+                                {% comment %} {% if topic.order <= 3 %}
+                                <span class="meta">
+                                    <span class="label label-info meta-top">
+                                        TOP
+                                    </span>
+                                </span>
+                                {% endif %} {% endcomment %}
+
+                                <span class="meta meta-username">
+                                    <a href="{% url 'niji:user_info' announcement.user.pk %}">
+                                        {{ announcement.user.username }}
+                                    </a>
+                                </span>
+                                <span class="meta meta-pub_date">
+                                    {{ announcement.pub_date | naturaltime }}
+                                </span>
+                            </p>
+                        </div>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+        <div class="panel-footer">
+            {% get_pagination %}
+        </div>
+    </div>
+{% endblock %}
